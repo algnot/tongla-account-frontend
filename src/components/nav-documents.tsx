@@ -19,7 +19,7 @@ export function NavDocuments({
     icon: Icon;
   }[];
 }) {
-  const { router, setFullLoading } = useHelperContext()();
+  const { router } = useHelperContext()();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -31,11 +31,7 @@ export function NavDocuments({
               <div
                 className="cursor-pointer"
                 onClick={() => {
-                  setFullLoading(true);
                   router.push(item.url);
-                  setTimeout(() => {
-                    setFullLoading(false);
-                  }, 300);
                 }}
               >
                 <item.icon />
