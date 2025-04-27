@@ -1,10 +1,15 @@
 import axios, { AxiosInstance } from "axios";
-import { getItem } from "./storage";
-import { ErrorResponse, RegisterRequest, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
+import { getItem, removeItem, setItem } from "./storage";
+import { ErrorResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
 
 const handlerError = (error: unknown, setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void): ErrorResponse => {
     if (axios.isAxiosError(error)) {
-        if (error.response && error.response.data && error.response.data.redirect) {
+        if (error.status === 401) {
+            return {
+                status: false,
+                message: "Session expired. Please login again.",
+            };
+        } else if (error.response && error.response.data && error.response.data.redirect) {
             window.location.href = error.response.data.redirect;
             return {
                 status: false,
@@ -45,6 +50,25 @@ export class BackendClient {
                 "Authorization": `Bearer ${getItem("access_token")}`,
             },
         });
+
+        this.client.interceptors.response.use(
+            response => response,
+            async (error) => {
+                if (error.response && error.response.status === 401) {
+                    if (getItem("refresh_token")) {
+                        const refreshed = await this.refreshAccessTokenSilently();
+                        if (refreshed) {
+                            error.config.headers["Authorization"] = `Bearer ${getItem("access_token")}`;
+                            return this.client.request(error.config);
+                        } else {
+                            removeItem("refresh_token");
+                            removeItem("access_token");
+                        }
+                    }
+                }
+                throw error;
+            }
+        );
     }
 
     async register(request: RegisterRequest): Promise<ErrorResponse | RegisterRequest> {
@@ -82,6 +106,49 @@ export class BackendClient {
             return response.data;
         } catch (e) {
             return handlerError(e, this.setAlert);
+        }
+    }
+
+    async loginWithCode(request: LoginWithCodeRequest): Promise<ErrorResponse | LoginWithCodeResponse> {
+        try {
+            const response = await this.client.post("/auth/login-with-code", request);
+            setItem("access_token", response.data.access_token);
+            setItem("refresh_token", response.data.refresh_token);
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async getUserInfo(): Promise<ErrorResponse | UserInfo> {
+        try {
+            const response = await this.client.get("/auth/me");
+            return response.data;
+        } catch (e) {
+            console.log(e);
+            return {
+                id: "",
+                username: "",
+                email: "",
+                firstname: "",
+                lastname: "",
+                is_verified: false,
+            }
+        }
+    }
+
+    private async refreshAccessTokenSilently(): Promise<boolean> {
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_PATH}/auth/refresh`, {}, {
+                headers: {
+                    "Authorization": `Bearer ${getItem("refresh_token")}`,
+                },
+            });
+            setItem("access_token", response.data.access_token);
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false;
         }
     }
 }

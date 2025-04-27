@@ -36,6 +36,10 @@ export default function LoginPage() {
     e.preventDefault();
     setFullLoading(true);
 
+    if (is2FAEnabled) {
+      return onSubmit2FA();
+    }
+
     const form = formRef.current;
     const email = form?.email?.value ?? "";
     const response = await backendClient.login(email);
@@ -46,6 +50,22 @@ export default function LoginPage() {
     }
 
     setIsMethodEnabled(true);
+  };
+
+  const onSubmit2FA = async () => {
+    const form = formRef.current;
+    const code = form?.code?.value ?? "";
+    const response = await backendClient.loginWithCode({
+      email: form?.email?.value ?? "",
+      code,
+    });
+
+    setFullLoading(false);
+    if (isErrorResponse(response)) {
+      return;
+    }
+
+    window.location.href = "/";
   };
 
   return (

@@ -27,3 +27,22 @@ export interface Verify2FARequest {
     token: string;
     code: string;
 }
+
+export interface LoginWithCodeRequest {
+    email: string;
+    code: string;
+}
+
+export interface LoginWithCodeResponse {
+    refresh_token: string;
+    access_token: string;
+}
+
+export interface UserInfo {
+    id: string;
+    username: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    is_verified: boolean;
+}
