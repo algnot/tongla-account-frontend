@@ -9,6 +9,8 @@ export default function Home() {
   useEffect(() => {
     if (userData?.id == "") {
       router.push("/login");
+    } else if (userData?.id != "") {
+      router.push("/account");
     }
   }, [userData]);
 
