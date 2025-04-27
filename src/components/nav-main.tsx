@@ -19,7 +19,7 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
-  const { router, setFullLoading } = useHelperContext()();
+  const { router } = useHelperContext()();
 
   return (
     <SidebarGroup>
@@ -31,11 +31,7 @@ export function NavMain({
                 tooltip={item.title}
                 className="cursor-pointer"
                 onClick={() => {
-                  setFullLoading(true);
                   router.push(item.url);
-                  setTimeout(() => {
-                    setFullLoading(false);
-                  }, 300);
                 }}
               >
                 {item.icon && <item.icon />}

@@ -27,7 +27,7 @@ import { useHelperContext } from "./providers/helper-provider";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { userData, router, setFullLoading } = useHelperContext()();
+  const { userData, router } = useHelperContext()();
 
   return (
     <SidebarMenu className="cursor-pointer">
@@ -82,11 +82,7 @@ export function NavUser() {
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => {
-                  setFullLoading(true);
                   router.push("/account");
-                  setTimeout(() => {
-                    setFullLoading(false);
-                  }, 300);
                 }}
               >
                 <IconUserCircle />
@@ -95,11 +91,7 @@ export function NavUser() {
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => {
-                  setFullLoading(true);
                   router.push("/account/notification");
-                  setTimeout(() => {
-                    setFullLoading(false);
-                  }, 300);
                 }}
               >
                 <IconNotification />

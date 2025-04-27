@@ -21,7 +21,7 @@ export function NavSecondary({
     icon: Icon;
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const { router, setFullLoading } = useHelperContext()();
+  const { router } = useHelperContext()();
 
   return (
     <SidebarGroup {...props}>
@@ -32,11 +32,7 @@ export function NavSecondary({
               <SidebarMenuButton asChild>
                 <div
                   onClick={() => {
-                    setFullLoading(true);
                     router.push(item.url);
-                    setTimeout(() => {
-                      setFullLoading(false);
-                    }, 300);
                   }}
                 >
                   <item.icon />
