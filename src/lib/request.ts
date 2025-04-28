@@ -25,7 +25,7 @@ const handlerError = (error: unknown, setAlert: (message: string, type: string, 
             setAlert("error", error.message, () => { }, false);
             return {
                 status: false,
-                message: error.message,
+                message: error.response?.data ?? error.message,
             };
         }
     } else {
