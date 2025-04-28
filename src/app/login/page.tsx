@@ -20,7 +20,7 @@ import { KeyRound, Mail } from "lucide-react";
 
 export default function LoginPage() {
   const { theme: currentTheme } = useTheme();
-  const { setFullLoading, backendClient } = useHelperContext()();
+  const { setFullLoading, backendClient, setAlert } = useHelperContext()();
   const [theme, setTheme] = useState("dark");
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isMethodEnabled, setIsMethodEnabled] = useState(false);
@@ -66,6 +66,31 @@ export default function LoginPage() {
     }
 
     window.location.href = "/";
+  };
+
+  const requestLoginLink = async () => {
+    const form = formRef.current;
+    const email = form?.email?.value ?? "";
+    setFullLoading(true);
+    const response = await backendClient.requestLoginLink(email);
+    setFullLoading(false);
+
+    if (isErrorResponse(response)) {
+      return;
+    }
+
+    setAlert(
+      "success",
+      "Login link sent to " + email,
+      () => {
+        if (form?.email) {
+          form.email.value = "";
+        }
+        setIsMethodEnabled(false);
+        setIs2FAEnabled(false);
+      },
+      false
+    );
   };
 
   return (
@@ -132,6 +157,7 @@ export default function LoginPage() {
                           variant="outline"
                           type="button"
                           className="w-full justify-start gap-2"
+                          onClick={requestLoginLink}
                         >
                           <Mail className="h-4 w-4" />
                           Get login link by email

@@ -151,4 +151,28 @@ export class BackendClient {
             return false;
         }
     }
+
+    async requestLoginLink(email: string): Promise<ErrorResponse | void> {
+        try {
+            const response = await this.client.post("/auth/request-email-login", {
+                email,
+            });
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async loginWithToken(token: string): Promise<ErrorResponse | LoginWithCodeResponse> {
+        try {
+            const response = await this.client.post("/auth/login-with-token", {
+                token,
+            });
+            setItem("access_token", response.data.access_token);
+            setItem("refresh_token", response.data.refresh_token);
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
 }
