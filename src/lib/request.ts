@@ -132,6 +132,10 @@ export class BackendClient {
                 email: "",
                 firstname: "",
                 lastname: "",
+                phone: "",
+                address: "",
+                birthdate: "",
+                gender: "",
                 is_verified: false,
             }
         }

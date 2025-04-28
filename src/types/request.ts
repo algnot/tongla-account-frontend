@@ -45,4 +45,8 @@ export interface UserInfo {
     firstname: string;
     lastname: string;
     is_verified: boolean;
+    phone: string;
+    address: string;
+    birthdate: string;
+    gender: string;
 }

@@ -78,7 +78,7 @@ export default function Page() {
             id="birthday"
             name="birthday"
             placeholder="birthday"
-            defaultValue=""
+            defaultValue={userData?.birthdate}
           />
         </div>
 
@@ -86,7 +86,7 @@ export default function Page() {
           <Label htmlFor="gender" className="mb-4">
             gender
           </Label>
-          <RadioGroup defaultValue="not-to-say" className="flex gap-5">
+          <RadioGroup defaultValue={userData?.gender} className="flex gap-5">
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="male" id="male" />
               <Label htmlFor="male">male</Label>
@@ -157,7 +157,7 @@ export default function Page() {
             name="phone"
             placeholder="phone"
             className="mt-2"
-            defaultValue=""
+            defaultValue={userData?.phone}
           />
         </div>
 
@@ -170,7 +170,7 @@ export default function Page() {
             id="address"
             name="address"
             placeholder="address"
-            defaultValue=""
+            defaultValue={userData?.address}
           />
         </div>
       </div>
