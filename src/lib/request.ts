@@ -135,7 +135,7 @@ export class BackendClient {
                 phone: "",
                 address: "",
                 birthdate: "",
-                gender: "",
+                gender: "notToSay",
                 is_verified: false,
             }
         }

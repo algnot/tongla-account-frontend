@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useHelperContext } from "@/components/providers/helper-provider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,10 +9,17 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export default function Page() {
   const { header, userData } = useHelperContext()();
+  const [gender, setGender] = useState("");
 
   useEffect(() => {
     header.setTitle("Personal Information");
   }, []);
+
+  useEffect(() => {
+    if (userData?.gender) {
+      setGender(userData.gender);
+    }
+  }, [userData]);
 
   return (
     <form className="p-4">
@@ -86,7 +93,11 @@ export default function Page() {
           <Label htmlFor="gender" className="mb-4">
             gender
           </Label>
-          <RadioGroup defaultValue={userData?.gender} className="flex gap-5">
+          <RadioGroup
+            value={gender}
+            onValueChange={(value) => setGender(value)}
+            className="flex gap-5"
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="male" id="male" />
               <Label htmlFor="male">male</Label>
@@ -96,8 +107,8 @@ export default function Page() {
               <Label htmlFor="female">female</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="not-to-say" id="not-to-say" />
-              <Label htmlFor="not-to-say">not to say</Label>
+              <RadioGroupItem value="notToSay" id="notToSay" />
+              <Label htmlFor="notToSay">not to say</Label>
             </div>
           </RadioGroup>
         </div>
@@ -123,20 +134,6 @@ export default function Page() {
           <div className="mt-5">
             <Label htmlFor="email" className="mb-2">
               email
-            </Label>
-            <Input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="your email"
-              disabled
-              defaultValue={userData?.email}
-            />
-          </div>
-
-          <div className="mt-5">
-            <Label htmlFor="email" className="mb-2">
-              Email
             </Label>
             <Input
               type="email"
