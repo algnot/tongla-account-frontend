@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { FullLoadingProvider } from "@/components/providers/full-loading-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { HelperProvider } from "@/components/providers/helper-provider";
+import { ConfirmCodeProvider } from "@/components/providers/confirm-code-provider";
 
 export const metadata: Metadata = {
   title: "tongla account service",
@@ -27,7 +28,9 @@ export default function RootLayout({
           <Suspense fallback={<div></div>}>
             <AlertDialogProvider>
               <FullLoadingProvider>
-                <HelperProvider>{children}</HelperProvider>
+                <ConfirmCodeProvider>
+                  <HelperProvider>{children}</HelperProvider>
+                </ConfirmCodeProvider>
               </FullLoadingProvider>
             </AlertDialogProvider>
           </Suspense>

@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useHelperContext } from "@/components/providers/helper-provider";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconCamera } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export default function Page() {
-  const { header, userData } = useHelperContext()();
+  const { header, userData, setConfirmCode } = useHelperContext()();
   const [gender, setGender] = useState("");
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   useEffect(() => {
     header.setTitle("Personal Information");
@@ -21,8 +22,35 @@ export default function Page() {
     }
   }, [userData]);
 
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = formRef.current;
+    const username = form?.username?.value ?? "";
+    const firstname = form?.firstname?.value ?? "";
+    const lastname = form?.lastname?.value ?? "";
+    const birthday = form?.birthday?.value ?? "";
+    const phone = form?.phone?.value ?? "";
+    const address = form?.address?.value ?? "";
+
+    setConfirmCode("Enter your 2FA Code", "to update your profile you want to enter 2FA Code", (code) => {
+      const payload = {
+        username,
+        firstname,
+        lastname,
+        gender,
+        birthday,
+        phone,
+        address,
+        code
+      };
+  
+      console.log(payload);
+    })
+  };
+
   return (
-    <form className="p-4">
+    <form className="p-4" onSubmit={onSubmit} ref={formRef}>
       <div className="rounded-xl border p-4">
         <div className="text-xl font-medium mb-5">Basic information</div>
         <Button
@@ -111,6 +139,9 @@ export default function Page() {
               <Label htmlFor="notToSay">not to say</Label>
             </div>
           </RadioGroup>
+          <div className="flex justify-end">
+            <Button className="mt-3">save</Button>
+          </div>
         </div>
       </div>
 
@@ -170,6 +201,9 @@ export default function Page() {
             defaultValue={userData?.address}
           />
         </div>
+        <div className="flex justify-end">
+            <Button className="mt-3">save</Button>
+          </div>
       </div>
     </form>
   );

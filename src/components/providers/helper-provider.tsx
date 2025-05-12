@@ -13,6 +13,7 @@ import { useFullLoadingContext } from "./full-loading-provider";
 import { BackendClient } from "@/lib/request";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isErrorResponse, UserInfo } from "@/types/request";
+import { useConfirmCodeContext } from "./confirm-code-provider"
 
 interface HeaderContextType {
   title: string;
@@ -32,6 +33,11 @@ interface HelperContextType {
   searchParams: ReturnType<typeof useSearchParams>;
   userData: UserInfo | null;
   header: HeaderContextType;
+  setConfirmCode: (
+    title: string, 
+    text: string, 
+    action: void | ((code: string) => void)
+  ) => void;
 }
 
 const HelperContext = createContext<() => HelperContextType>(() => {
@@ -46,12 +52,14 @@ const HelperContext = createContext<() => HelperContextType>(() => {
       title: "",
       setTitle: () => {},
     },
+    setConfirmCode: () => {},
   };
 });
 
 export function HelperProvider({ children }: { children: ReactNode }) {
   const setAlert = useAlertContext();
   const setFullLoading = useFullLoadingContext();
+  const setConfirmCode = useConfirmCodeContext();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userData, setUserData] = useState<UserInfo | null>(null);
@@ -80,8 +88,9 @@ export function HelperProvider({ children }: { children: ReactNode }) {
         title,
         setTitle,
       },
+      setConfirmCode
     }),
-    [setAlert, setFullLoading, router, searchParams, userData, title]
+    [setAlert, setFullLoading, router, searchParams, userData, title, setConfirmCode]
   );
 
   return (
