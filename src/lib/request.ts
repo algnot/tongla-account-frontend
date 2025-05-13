@@ -122,7 +122,7 @@ export class BackendClient {
 
     async getUserInfo(): Promise<ErrorResponse | UserInfo> {
         try {
-            const response = await this.client.get("/auth/me");
+            const response = await this.client.get("/account/me");
             return response.data;
         } catch (e) {
             console.log(e);
