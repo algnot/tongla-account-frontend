@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { getItem, removeItem, setItem } from "./storage";
 import { ErrorResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
+import DeviceDetector from "device-detector-js";
 
 const handlerError = (error: unknown, setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void): ErrorResponse => {
     if (axios.isAxiosError(error)) {
@@ -37,6 +38,16 @@ const handlerError = (error: unknown, setAlert: (message: string, type: string, 
     }
 };
 
+export const getDeviceModel = (): string => {
+    const detector = new DeviceDetector();
+    const userAgent = navigator.userAgent;
+    const result = detector.parse(userAgent);
+
+    const device = result.device?.model ?? "unknown-device";
+    const brand = result.device?.brand ?? "";
+    return brand ? `${brand} ${device}` : device;
+};
+
 export class BackendClient {
     private readonly client: AxiosInstance;
     private readonly setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void;
@@ -48,6 +59,7 @@ export class BackendClient {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${getItem("access_token")}`,
+                "Device-ID": getDeviceModel()
             },
         });
 
