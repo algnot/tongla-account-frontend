@@ -7,9 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { isErrorResponse } from "@/types/request";
 export default function Page() {
-  const { header, userData, setConfirmCode } = useHelperContext()();
+  const {
+    header,
+    userData,
+    setConfirmCode,
+    backendClient,
+    setFullLoading,
+    setAlert,
+  } = useHelperContext()();
   const [gender, setGender] = useState("");
+  const [hasChanged, setHasChanged] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
 
   useEffect(() => {
@@ -29,24 +38,42 @@ export default function Page() {
     const username = form?.username?.value ?? "";
     const firstname = form?.firstname?.value ?? "";
     const lastname = form?.lastname?.value ?? "";
-    const birthday = form?.birthday?.value ?? "";
+    const birthdate = form?.birthdate?.value ?? "";
     const phone = form?.phone?.value ?? "";
     const address = form?.address?.value ?? "";
 
-    setConfirmCode("Enter your 2FA Code", "to update your profile you want to enter 2FA Code", (code) => {
-      const payload = {
-        username,
-        firstname,
-        lastname,
-        gender,
-        birthday,
-        phone,
-        address,
-        code
-      };
-  
-      console.log(payload);
-    })
+    setConfirmCode(
+      "Enter your 2FA Code",
+      "to update your profile you want to enter 2FA Code",
+      async (code) => {
+        setFullLoading(true);
+        const payload = {
+          username,
+          firstname,
+          lastname,
+          gender,
+          birthdate,
+          phone,
+          address,
+          code,
+        };
+
+        const response = await backendClient.updateUserInfo(payload);
+        setFullLoading(false);
+        if (isErrorResponse(response)) {
+          return;
+        }
+
+        setAlert(
+          "success",
+          `Your account is updated`,
+          () => {
+            window.location.reload();
+          },
+          false
+        );
+      }
+    );
   };
 
   return (
@@ -75,6 +102,7 @@ export default function Page() {
             placeholder="username"
             className="mt-2"
             defaultValue={userData?.username}
+            onChange={() => setHasChanged(true)}
           />
         </div>
 
@@ -88,6 +116,7 @@ export default function Page() {
             name="firstname"
             placeholder="firstname"
             defaultValue={userData?.firstname}
+            onChange={() => setHasChanged(true)}
           />
         </div>
 
@@ -101,19 +130,21 @@ export default function Page() {
             name="lastname"
             placeholder="lastname"
             defaultValue={userData?.lastname}
+            onChange={() => setHasChanged(true)}
           />
         </div>
 
         <div className="mt-5">
-          <Label htmlFor="birthday" className="mb-2">
-            birthday
+          <Label htmlFor="birthdate" className="mb-2">
+            birthdate
           </Label>
           <Input
             type="date"
-            id="birthday"
-            name="birthday"
-            placeholder="birthday"
+            id="birthdate"
+            name="birthdate"
+            placeholder="birthdate"
             defaultValue={userData?.birthdate}
+            onChange={() => setHasChanged(true)}
           />
         </div>
 
@@ -123,7 +154,10 @@ export default function Page() {
           </Label>
           <RadioGroup
             value={gender}
-            onValueChange={(value) => setGender(value)}
+            onValueChange={(value) => {
+              setGender(value);
+              setHasChanged(true);
+            }}
             className="flex gap-5"
           >
             <div className="flex items-center space-x-2">
@@ -140,7 +174,9 @@ export default function Page() {
             </div>
           </RadioGroup>
           <div className="flex justify-end">
-            <Button className="mt-3">save</Button>
+            <Button className="mt-3" disabled={!hasChanged}>
+              save
+            </Button>
           </div>
         </div>
       </div>
@@ -186,6 +222,7 @@ export default function Page() {
             placeholder="phone"
             className="mt-2"
             defaultValue={userData?.phone}
+            onChange={() => setHasChanged(true)}
           />
         </div>
 
@@ -199,11 +236,14 @@ export default function Page() {
             name="address"
             placeholder="address"
             defaultValue={userData?.address}
+            onChange={() => setHasChanged(true)}
           />
         </div>
         <div className="flex justify-end">
-            <Button className="mt-3">save</Button>
-          </div>
+          <Button className="mt-3" disabled={!hasChanged}>
+            save
+          </Button>
+        </div>
       </div>
     </form>
   );

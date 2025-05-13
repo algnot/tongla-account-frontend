@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { getItem, removeItem, setItem } from "./storage";
-import { ErrorResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
+import { ErrorResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
 
 const handlerError = (error: unknown, setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void): ErrorResponse => {
     if (axios.isAxiosError(error)) {
@@ -174,6 +174,15 @@ export class BackendClient {
             });
             setItem("access_token", response.data.access_token);
             setItem("refresh_token", response.data.refresh_token);
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async updateUserInfo(payload: UpdateUserInfo): Promise<ErrorResponse | UserInfo> {
+        try {
+            const response = await this.client.put("/account/update-user", payload);
             return response.data;
         } catch (e) {
             return handlerError(e, this.setAlert);

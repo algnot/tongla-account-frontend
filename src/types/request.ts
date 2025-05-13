@@ -50,3 +50,14 @@ export interface UserInfo {
     birthdate: string;
     gender: string;
 }
+
+export interface UpdateUserInfo {
+    username: string;
+    firstname: string;
+    lastname: string;
+    gender: string;
+    birthdate: string;
+    phone: string;
+    address: string;
+    code: string;
+}
