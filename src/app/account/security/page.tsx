@@ -60,7 +60,7 @@ export default function Page() {
                     </div>
                     <div className="flex">
                       <div className="text-sm border rounded-md px-2 bg-foreground text-background">
-                        {device.issuer} - {device.user_agent}
+                        {device.issuer}
                       </div>
                     </div>
                   </div>
@@ -89,8 +89,11 @@ export default function Page() {
                 )}
               </div>
               <div className="pl-16 text-sm">
-                <div className="text-gray-500">
-                  {formatDiff(device.issuer_at)}
+                <div className="text-gray-500" title={device.user_agent}>
+                  {formatDiff(device.issuer_at)} -{" "}
+                  {device.user_agent.length > 40
+                    ? device.user_agent.slice(0, 40) + "..."
+                    : device.user_agent}
                 </div>
               </div>
             </Card>
