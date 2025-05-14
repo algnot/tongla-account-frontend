@@ -67,7 +67,7 @@ export default function Page() {
                   <div>
                     <div className="flex gap-1 items-center">
                       <div className="font-semibold text-lg">
-                        {device.device_id ?? "Unknown Device"}
+                        {device.device_id != "" ? device.device_id : "Unknown"}
                       </div>
                     </div>
                     <div className="flex">
