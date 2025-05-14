@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useHelperContext } from "@/components/providers/helper-provider";
 import { isErrorResponse } from "@/types/request";
 export default function LoginPage() {
-  const { setFullLoading, backendClient, router } =
+  const { setFullLoading, backendClient, router, userData } =
     useHelperContext()();
   const { theme: currentTheme } = useTheme();
   const [theme, setTheme] = useState("dark");
@@ -28,6 +28,13 @@ export default function LoginPage() {
       setTheme(currentTheme);
     }
   }, [currentTheme]);
+
+  useEffect(() => {
+    if (userData?.id != "") {
+      router.push("/account");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
