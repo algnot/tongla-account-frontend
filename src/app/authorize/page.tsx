@@ -1,11 +1,10 @@
 "use client";
 import { useHelperContext } from "@/components/providers/helper-provider";
 import { isErrorResponse } from "@/types/request";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 export default function Page() {
   const { backendClient } = useHelperContext()();
-  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     fetchData();
@@ -30,9 +29,7 @@ export default function Page() {
           encodeURIComponent(window.location.href)
         );
         window.location.href = "/login?redirect=" + redirectUrl;
-      } else {
-        setError(response.message);
-      }
+      } 
       return
     }
     window.location.href = response.redirect

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, isAxiosError } from "axios";
+import axios, { AxiosInstance } from "axios";
 import { getItem, removeItem, setItem } from "./storage";
 import { ErrorResponse, GetAllDeviceResponse, GetServiceRequest, GetServiceResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
 import DeviceDetector from "device-detector-js";
