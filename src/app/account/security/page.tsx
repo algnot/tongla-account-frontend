@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Page() {
-  const { header, backendClient, setFullLoading } = useHelperContext()();
+  const { header, backendClient, setFullLoading, setAlert } =
+    useHelperContext()();
   const [devices, setDevices] = useState<Device[]>([]);
 
   useEffect(() => {
@@ -38,8 +39,19 @@ export default function Page() {
   };
 
   const handleDelete = async (sessionId: string) => {
-    // TODO: call API to revoke session
-    console.log("Delete device session:", sessionId);
+    setAlert(
+      "Do you want to delete this device?",
+      "system will logout this device",
+      async () => {
+        setFullLoading(true);
+        const response = await backendClient.deleteDevice(sessionId);
+        if (isErrorResponse(response)) {
+          return;
+        }
+        getAllDevice();
+      },
+      true
+    );
   };
 
   return (

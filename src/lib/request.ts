@@ -209,4 +209,30 @@ export class BackendClient {
             return handlerError(e, this.setAlert);
         }
     }
+
+    async logout(): Promise<ErrorResponse | void> {
+        try {
+            const response = await this.client.post("/auth/logout", {}, {
+                headers: {
+                    "Authorization": `Bearer ${getItem("refresh_token")}`,
+                },
+            });
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async deleteDevice(sessionId: string): Promise<ErrorResponse | void> {
+        try {
+            const response = await this.client.delete("/account/delete-device", {
+                data: {
+                    session_id: sessionId
+                }
+            });
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
 }

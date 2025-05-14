@@ -24,10 +24,28 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useHelperContext } from "./providers/helper-provider";
+import { isErrorResponse } from "@/types/request";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const { userData, router } = useHelperContext()();
+  const { userData, router, backendClient, setAlert, setFullLoading } =
+    useHelperContext()();
+
+  const onLogout = async () => {
+    setAlert(
+      "Do you want to logout?",
+      "click confirm to continue",
+      async () => {
+        setFullLoading(true);
+        const response = await backendClient.logout();
+        if (isErrorResponse(response)) {
+          return;
+        }
+        window.location.reload();
+      },
+      true
+    );
+  };
 
   return (
     <SidebarMenu className="cursor-pointer">
@@ -99,7 +117,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={onLogout} className="cursor-pointer">
               <IconLogout />
               Log out
             </DropdownMenuItem>
