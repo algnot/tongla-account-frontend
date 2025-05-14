@@ -1,6 +1,6 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, isAxiosError } from "axios";
 import { getItem, removeItem, setItem } from "./storage";
-import { ErrorResponse, GetAllDeviceResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
+import { ErrorResponse, GetAllDeviceResponse, GetServiceRequest, GetServiceResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
 import DeviceDetector from "device-detector-js";
 
 const handlerError = (error: unknown, setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void): ErrorResponse => {
@@ -232,6 +232,27 @@ export class BackendClient {
             });
             return response.data;
         } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async getService(payload: GetServiceRequest): Promise<ErrorResponse | GetServiceResponse> {
+        try {
+            const response = await this.client.post("/openid/get-service", payload, {
+                headers: {
+                    "Authorization": `Bearer ${getItem("refresh_token")}`,
+                },
+            });
+            return response.data;
+        } catch (e) {
+            if (axios.isAxiosError(e)) {
+                if (e.response && e.response.status === 401) {
+                    return {
+                        status: false,
+                        message: "401"
+                    }
+                }
+            }
             return handlerError(e, this.setAlert);
         }
     }

@@ -74,3 +74,16 @@ export interface Device {
 export interface GetAllDeviceResponse {
     devices: Device[];
 }
+
+export interface GetServiceRequest {
+    client_id: string;
+    domain: string;
+    redirect_uri: string;
+    response_type: string;
+    scope: string;
+    state: string;
+}
+
+export interface GetServiceResponse {
+    redirect: string;
+}

@@ -65,7 +65,12 @@ export default function LoginPage() {
       return;
     }
 
-    window.location.href = "/";
+    const params = new URLSearchParams(window.location.search);
+    const redirect = decodeURIComponent(
+      decodeURIComponent(params.get("redirect") ?? "")
+    );
+
+    window.location.href = redirect ?? "/";
   };
 
   const requestLoginLink = async () => {
@@ -92,6 +97,9 @@ export default function LoginPage() {
       false
     );
   };
+
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get("redirect");
 
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -153,15 +161,17 @@ export default function LoginPage() {
                           <KeyRound className="h-4 w-4" />
                           Enter 2FA code
                         </Button>
-                        <Button
-                          variant="outline"
-                          type="button"
-                          className="w-full justify-start gap-2"
-                          onClick={requestLoginLink}
-                        >
-                          <Mail className="h-4 w-4" />
-                          Get login link by email
-                        </Button>
+                        {!redirect && (
+                          <Button
+                            variant="outline"
+                            type="button"
+                            className="w-full justify-start gap-2"
+                            onClick={requestLoginLink}
+                          >
+                            <Mail className="h-4 w-4" />
+                            Get login link by email
+                          </Button>
+                        )}
                       </div>
                     </div>
                   )}
