@@ -20,7 +20,7 @@ import { KeyRound, Mail } from "lucide-react";
 
 export default function LoginPage() {
   const { theme: currentTheme } = useTheme();
-  const { setFullLoading, backendClient, setAlert, userData, router } =
+  const { setFullLoading, backendClient, setAlert } =
     useHelperContext()();
   const [theme, setTheme] = useState("dark");
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -32,13 +32,6 @@ export default function LoginPage() {
       setTheme(currentTheme);
     }
   }, [currentTheme]);
-
-  useEffect(() => {
-    if (userData?.id != "") {
-      router.push("/account");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
