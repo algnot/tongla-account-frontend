@@ -60,7 +60,7 @@ export default function Page() {
                     </div>
                     <div className="flex">
                       <div className="text-sm border rounded-md px-2 bg-foreground text-background">
-                        {device.issuer}
+                        {device.issuer} - {device.user_agent}
                       </div>
                     </div>
                   </div>
