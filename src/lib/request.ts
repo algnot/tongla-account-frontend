@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { getItem, removeItem, setItem } from "./storage";
-import { ErrorResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
+import { ErrorResponse, GetAllDeviceResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
 import DeviceDetector from "device-detector-js";
 
 const handlerError = (error: unknown, setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void): ErrorResponse => {
@@ -195,6 +195,15 @@ export class BackendClient {
     async updateUserInfo(payload: UpdateUserInfo): Promise<ErrorResponse | UserInfo> {
         try {
             const response = await this.client.put("/account/update-user", payload);
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async getAllDevice(): Promise<ErrorResponse | GetAllDeviceResponse> {
+        try {
+            const response = await this.client.get("/account/all-device");
             return response.data;
         } catch (e) {
             return handlerError(e, this.setAlert);

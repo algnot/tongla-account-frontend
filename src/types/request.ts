@@ -61,3 +61,16 @@ export interface UpdateUserInfo {
     address: string;
     code: string;
 }
+
+export interface Device {
+    session_id: string;
+    user_agent: string;
+    device_id: string;
+    issuer: string;
+    issuer_at: number;
+    current: boolean;
+}
+
+export interface GetAllDeviceResponse {
+    devices: Device[];
+}
