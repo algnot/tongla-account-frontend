@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { isErrorResponse } from "@/types/request";
+import { Copy, Check } from "lucide-react";
+
 export default function Page() {
   const {
     header,
@@ -19,6 +21,7 @@ export default function Page() {
   } = useHelperContext()();
   const [gender, setGender] = useState("");
   const [hasChanged, setHasChanged] = useState(false);
+  const [copied, setCopied] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
 
   useEffect(() => {
@@ -30,6 +33,12 @@ export default function Page() {
       setGender(userData.gender);
     }
   }, [userData]);
+
+  const handleCopyUid = async (uid: string) => {
+    await navigator.clipboard.writeText(uid);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -184,18 +193,26 @@ export default function Page() {
       <div className="rounded-xl border p-4 mt-5">
         <div className="text-xl font-medium">Contact information</div>
         <div className="grid md:grid-cols-2 grid-cols-1 md:gap-5">
-          <div className="mt-5">
+          <div className="mt-5 relative">
             <Label htmlFor="uid" className="mb-2">
               uid
             </Label>
             <Input
-              type="text"
+              type="password"
               id="uid"
               name="uid"
               placeholder="your uid"
               disabled
               defaultValue={userData?.id}
+              className="pr-10"
             />
+            <button
+              type="button"
+              className="absolute right-3 top-[38px] text-muted-foreground"
+              onClick={() => handleCopyUid(userData?.id ?? "")}
+            >
+              {copied ? <Check size={18} /> : <Copy size={18} />}
+            </button>
           </div>
 
           <div className="mt-5">
