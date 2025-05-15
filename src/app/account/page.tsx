@@ -208,10 +208,14 @@ export default function Page() {
             />
             <button
               type="button"
-              className="absolute right-3 top-[38px] text-muted-foreground"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground"
               onClick={() => handleCopyUid(userData?.id ?? "")}
             >
-              {copied ? <Check size={18} /> : <Copy size={18} />}
+              {copied ? (
+                <Check size={18} className="cursor-pointer" />
+              ) : (
+                <Copy size={18} className="cursor-pointer" />
+              )}
             </button>
           </div>
 
