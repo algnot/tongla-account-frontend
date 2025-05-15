@@ -87,3 +87,15 @@ export interface GetServiceRequest {
 export interface GetServiceResponse {
     redirect: string;
 }
+
+export interface Notification {
+    content: string;
+    created: string;
+    reason: string;
+    success: string;
+    title: string;
+}
+
+export interface GetAllNotificationResponse {
+    notifications: Notification[];
+}

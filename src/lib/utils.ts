@@ -6,6 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDiff(targetTimestamp: number): string {
+  if (targetTimestamp > 1e12) {
+    targetTimestamp = Math.floor(targetTimestamp / 1000);
+  }
+
   const now = Math.floor(Date.now() / 1000);
   const diff = targetTimestamp - now;
   const absDiff = Math.abs(diff);

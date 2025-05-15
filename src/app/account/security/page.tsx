@@ -24,9 +24,7 @@ export default function Page() {
   }, []);
 
   const getAllDevice = async () => {
-    setFullLoading(true);
     const response = await backendClient.getAllDevice();
-    setFullLoading(false);
 
     if (isErrorResponse(response)) return;
     const sorted = [...response.devices].sort((a, b) => {
