@@ -193,30 +193,32 @@ export default function Page() {
       <div className="rounded-xl border p-4 mt-5">
         <div className="text-xl font-medium">Contact information</div>
         <div className="grid md:grid-cols-2 grid-cols-1 md:gap-5">
-          <div className="mt-5 relative">
+          <div className="mt-5">
             <Label htmlFor="uid" className="mb-2">
               uid
             </Label>
-            <Input
-              type="password"
-              id="uid"
-              name="uid"
-              placeholder="your uid"
-              disabled
-              defaultValue={userData?.id}
-              className="pr-10"
-            />
-            <button
-              type="button"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-              onClick={() => handleCopyUid(userData?.id ?? "")}
-            >
-              {copied ? (
-                <Check size={18} className="cursor-pointer" />
-              ) : (
-                <Copy size={18} className="cursor-pointer" />
-              )}
-            </button>
+            <div className="relative">
+              <Input
+                type="password"
+                id="uid"
+                name="uid"
+                placeholder="your uid"
+                disabled
+                defaultValue={userData?.id}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                onClick={() => handleCopyUid(userData?.id ?? "")}
+              >
+                {copied ? (
+                  <Check size={18} className="cursor-pointer" />
+                ) : (
+                  <Copy size={18} className="cursor-pointer" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="mt-5">
