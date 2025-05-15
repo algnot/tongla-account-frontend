@@ -99,3 +99,19 @@ export interface Notification {
 export interface GetAllNotificationResponse {
     notifications: Notification[];
 }
+
+export interface Service {
+    name: string;
+    client_id: string;
+    client_secret: string;
+    redirect_uri: string;
+    issuer: string;
+    scopes: string;
+    grant_types: string;
+    response_type: string;
+    openid_configuration_uri: string;
+}
+
+export interface GetAllServiceResponse {
+    services: Service[];
+}
