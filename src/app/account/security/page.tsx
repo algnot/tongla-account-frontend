@@ -43,6 +43,7 @@ export default function Page() {
       async () => {
         setFullLoading(true);
         const response = await backendClient.deleteDevice(sessionId);
+        setFullLoading(false);
         if (isErrorResponse(response)) {
           return;
         }
