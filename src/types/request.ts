@@ -86,6 +86,9 @@ export interface GetServiceRequest {
 
 export interface GetServiceResponse {
     redirect: string;
+    name: string;
+    issuer: string;
+    scope: string;
 }
 
 export interface Notification {
