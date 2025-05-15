@@ -22,11 +22,11 @@ export default function VerifyEmailPage() {
   const verifyEmail = async () => {
     setFullLoading(true);
     const response = await backendClient.verifyEmail({ token: token ?? "" });
+    setFullLoading(false);
     if (isErrorResponse(response)) {
       return;
     }
 
-    setFullLoading(false);
     setQrCode(response.qr_code);
   };
 
@@ -40,8 +40,9 @@ export default function VerifyEmailPage() {
       token: token ?? "",
       code,
     });
+    setFullLoading(false);
+
     if (isErrorResponse(response)) {
-      setFullLoading(false);
       return;
     }
 
@@ -49,7 +50,6 @@ export default function VerifyEmailPage() {
       "success",
       `Your ${response.username} account has been verified successfully`,
       () => {
-        setFullLoading(false);
         router.push("/login");
       },
       false

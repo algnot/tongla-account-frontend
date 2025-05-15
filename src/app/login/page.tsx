@@ -20,8 +20,7 @@ import { KeyRound, Mail } from "lucide-react";
 
 export default function LoginPage() {
   const { theme: currentTheme } = useTheme();
-  const { setFullLoading, backendClient, setAlert } =
-    useHelperContext()();
+  const { setFullLoading, backendClient, setAlert } = useHelperContext()();
   const [theme, setTheme] = useState("dark");
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isMethodEnabled, setIsMethodEnabled] = useState(false);
@@ -71,7 +70,11 @@ export default function LoginPage() {
       decodeURIComponent(params.get("redirect") ?? "")
     );
 
-    window.location.href = redirect ?? "/";
+    if (params.size == 0) {
+      window.location.href = "/";
+    } else {
+      window.location.href = redirect ?? "/";
+    }
   };
 
   const requestLoginLink = async () => {
