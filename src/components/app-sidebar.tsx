@@ -60,7 +60,7 @@ const data = {
     },
     {
       name: "Documentaion",
-      url: "/account/developer/documentation",
+      url: "https://openidconnect.net/",
       icon: IconFileWord,
     },
   ],
