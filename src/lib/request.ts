@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { getItem, removeItem, setItem } from "./storage";
-import { ErrorResponse, GetAllDeviceResponse, GetAllNotificationResponse, GetAllServiceResponse, GetServiceRequest, GetServiceResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
+import { AddServiceRequest, ErrorResponse, GetAllDeviceResponse, GetAllNotificationResponse, GetAllServiceResponse, GetServiceRequest, GetServiceResponse, LoginWithCodeRequest, LoginWithCodeResponse, RegisterRequest, Service, UpdateUserInfo, UserInfo, Verify2FARequest, VerifyEmailRequest, VerifyEmailResponse } from "@/types/request";
 import DeviceDetector from "device-detector-js";
 
 const handlerError = (error: unknown, setAlert: (message: string, type: string, action: number | (() => void), isOpen: boolean) => void): ErrorResponse => {
@@ -269,6 +269,15 @@ export class BackendClient {
     async getAllServices(): Promise<ErrorResponse | GetAllServiceResponse> {
         try {
             const response = await this.client.get("/account/all-service");
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async addService(payload: AddServiceRequest): Promise<ErrorResponse | Service> {
+        try {
+            const response = await this.client.post("/account/add-service", payload);
             return response.data;
         } catch (e) {
             return handlerError(e, this.setAlert);

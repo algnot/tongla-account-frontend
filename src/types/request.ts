@@ -103,6 +103,12 @@ export interface GetAllNotificationResponse {
     notifications: Notification[];
 }
 
+export interface AddServiceRequest {
+    name: string;
+    redirect_uri: string;
+    issuer: string;
+}
+
 export interface Service {
     name: string;
     client_id: string;

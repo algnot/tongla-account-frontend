@@ -4,13 +4,17 @@ import { useHelperContext } from "@/components/providers/helper-provider";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { isErrorResponse, Service } from "@/types/request";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function Page() {
-  const { header, backendClient } = useHelperContext()();
+  const { header, backendClient, userData, setFullLoading, setAlert } =
+    useHelperContext()();
   const [services, setServices] = useState<Service[]>([]);
   const [showSecrets, setShowSecrets] = useState<Record<number, boolean>>({});
+  const [showAddService, setShowAddService] = useState<boolean>(false);
 
   useEffect(() => {
     header.setTitle("Service");
@@ -29,10 +33,98 @@ export default function Page() {
     setShowSecrets((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
+  const AddServiceComponent = (props: { onCancel: () => void }) => {
+    const formRef = useRef<HTMLFormElement | null>(null);
+
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const form = formRef.current;
+      const serviceName = form?.serviceName?.value ?? "";
+      const redirectUri = form?.redirectUri?.value ?? "";
+      const issuer = form?.issuer?.value ?? "";
+      setFullLoading(true);
+
+      const response = await backendClient.addService({
+        redirect_uri: redirectUri,
+        name: serviceName,
+        issuer,
+      });
+      setFullLoading(false);
+
+      if (isErrorResponse(response)) {
+        return;
+      }
+      fetchData();
+
+      setAlert(
+        "success",
+        `Your service is created`,
+        () => {
+          props.onCancel();
+        },
+        false,
+      );
+    };
+
+    return (
+      <form
+        className="fixed flex top-0 left-0 z-10 h-full justify-center items-center w-full bg-[#00000045]"
+        onSubmit={onSubmit}
+        ref={formRef}
+      >
+        <Card className="p-4 flex flex-col gap-2 justify-start h-fit min-w-96">
+          <h1 className="text-xl font-bold">Add Service</h1>
+          <div className="grid gap-3 mb-3">
+            <Label htmlFor="serviceName">Service name</Label>
+            <Input
+              id="serviceName"
+              type="text"
+              placeholder="OpenId Service"
+              required
+            />
+          </div>
+          <div className="grid gap-3 mb-3">
+            <Label htmlFor="redirectUri">Redirect URI</Label>
+            <Input
+              id="redirectUri"
+              type="text"
+              placeholder="https://account.tongla.dev/callback"
+              required
+            />
+          </div>
+          <div className="grid gap-3 mb-5">
+            <Label htmlFor="issuer">Issuer</Label>
+            <Input
+              id="issuer"
+              type="text"
+              placeholder="issuer"
+              defaultValue={userData?.username}
+              required
+            />
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button variant="outline" type="button" onClick={props.onCancel}>
+              cancel
+            </Button>
+            <Button type="submit">confirm</Button>
+          </div>
+        </Card>
+      </form>
+    );
+  };
+
   return (
     <div className="p-6">
       <Card className="p-4">
         <h1 className="text-xl font-bold">Service</h1>
+        <div className="flex justify-start">
+          <Button className="w-fit" onClick={() => setShowAddService(true)}>
+            Add new service
+          </Button>
+        </div>
+        {showAddService && (
+          <AddServiceComponent onCancel={() => setShowAddService(false)} />
+        )}
         {services.map((service, index) => (
           <Card className="p-4 flex flex-col gap-3 justify-start" key={index}>
             <div className="flex items-start justify-between">
