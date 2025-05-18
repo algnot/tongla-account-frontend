@@ -26,7 +26,7 @@ export default function Page() {
   const fetchData = async () => {
     const response = await backendClient.getAllServices();
     if (isErrorResponse(response)) return;
-    setServices(response.services);
+    setServices(response.services ?? []);
   };
 
   const toggleSecret = (index: number) => {
@@ -117,7 +117,7 @@ export default function Page() {
           <AddServiceComponent onCancel={() => setShowAddService(false)} />
         )}
 
-        {services.map((service, index) => (
+        {services?.map((service, index) => (
           <Card className="p-4 flex flex-col gap-3 justify-start" key={index}>
             <div className="flex items-start justify-between">
               <div className="font-semibold text-lg">{service.name}</div>
@@ -200,7 +200,7 @@ export default function Page() {
           </Card>
         ))}
 
-        {services.length === 0 && (
+        {services?.length === 0 && (
           <div className="text-center text-muted-foreground">
             no service found
           </div>
